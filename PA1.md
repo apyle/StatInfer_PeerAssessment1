@@ -14,20 +14,17 @@ November 8, 2015
 
 
 ```r
-# The following code might come in handy once I start actually working on the project ;-)
+lambda = 0.2    # given by assignment
+samples = 40    # number of samples to use for the mean
+simulations = 1000      # number of simulations to run
 
-hist(runif(1000))
+meanexp = NULL
+for (i in 1 : simulations) 
+        meanexp = c(meanexp, mean(rexp(samples, lambda)))
+hist (meanexp)
 ```
 
 ![](PA1_files/figure-html/unnamed-chunk-1-1.png) 
-
-```r
-mns = NULL
-for (i in 1 : 1000) mns = c(mns, mean(runif(40)))
-hist(mns)
-```
-
-![](PA1_files/figure-html/unnamed-chunk-1-2.png) 
 
 ```r
 # nosim <- 1000

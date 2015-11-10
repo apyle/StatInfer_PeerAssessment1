@@ -19,13 +19,14 @@ output:
 
 ```{r}
 
-# The following code might come in handy once I start actually working on the project ;-)
+lambda = 0.2    # given by assignment
+samples = 40    # number of samples to use for the mean
+simulations = 1000      # number of simulations to run
 
-hist(runif(1000))
-
-mns = NULL
-for (i in 1 : 1000) mns = c(mns, mean(runif(40)))
-hist(mns)
+meanexp = NULL
+for (i in 1 : simulations) 
+        meanexp = c(meanexp, mean(rexp(samples, lambda)))
+hist (meanexp)
 
 # nosim <- 1000
 # cfunc <- function(x, n) sqrt(n) * (mean(x) - 0.9) / sqrt(.1 * .9)

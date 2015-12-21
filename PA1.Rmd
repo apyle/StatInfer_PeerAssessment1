@@ -1,7 +1,7 @@
 ---
 title: 'Comparing the exponential distribution in R with the Central Limit Theorem'
 author: "Alexander Pyle, <apyle@github.com>"
-date: "November 8, 2015"
+date: "December 27, 2015"
 output: 
   html_document:
     keep_md: true
@@ -9,15 +9,30 @@ output:
 
  A sample set of headings that could be used to guide the creation of your report might be:
 
-    Title (give an appropriate title) and Author Name
-    Overview: In a few (2-3) sentences explain what is going to be reported on.
+    (DONE) Title (give an appropriate title) and Author Name
+    (DONE) Overview: In a few (2-3) sentences explain what is going to be reported on.
     Simulations: Include English explanations of the simulations you ran, with the accompanying R code. Your explanations should make clear what the R code accomplishes.
     Sample Mean versus Theoretical Mean: Include figures with titles. In the figures, highlight the means you are comparing. Include text that explains the figures and what is shown on them, and provides appropriate numbers.
     Sample Variance versus Theoretical Variance: Include figures (output from R) with titles. Highlight the variances you are comparing. Include text that explains your understanding of the differences of the variances.
     Distribution: Via figures and text, explain how one can tell the distribution is approximately normal. 
     
+## Overview
 
-```{r}
+The Central Limit Theorem (CLT) posits that the distribution of averages of 
+independent and identically distributed (iid) variables randomly drawn from a 
+population becomes that of a standard normal as the sample size increases. This 
+analysis tests this theorem and determines that it holds true for mean and the 
+variance. That is to say, the sample mean will converge to the population mean 
+as the number of iid varables averaged together increases, and that the variance 
+of these averages will converge to the population variance.
+
+```{r, fig.height = 6, fig.width = 8, fig.align='center'}
+
+# load required libraries
+library(data.table)
+library(ggplot2)
+
+set.seed(90125) # seed the random number generator for reproducible results
 
 lambda = 0.2    # given by assignment
 samples = 40    # number of samples to use for the mean
@@ -28,6 +43,12 @@ for (i in 1 : simulations)
         meanexp = c(meanexp, mean(rexp(samples, lambda)))
 hist (meanexp)
 
+meanDF <- as.data.frame(meanexp)
+
+g <- ggplot(data = meanDF, aes(x = meanexp)) 
+g <- g + geom_histogram(aes(y = ..density..), fill = "lightblue", binwidth=0.2, colour = "black")
+g <- g + geom_density(size = 2, colour = "black")
+g
 # nosim <- 1000
 # cfunc <- function(x, n) sqrt(n) * (mean(x) - 0.9) / sqrt(.1 * .9)
 # dat <- data.frame(
@@ -43,6 +64,14 @@ hist (meanexp)
 # g <- g + stat_function(fun = dnorm, size = 2)
 # g + facet_grid(. ~ size)
 
+```
+
+## Appendix
+
+```{r}
+library(devtools)
+
+session_info() # display environment the script was create and run in.
 ```
 
 ```{r}

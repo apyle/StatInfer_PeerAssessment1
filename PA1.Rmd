@@ -1,10 +1,11 @@
 ---
-title: 'Comparing the exponential distribution in R with the Central Limit Theorem'
+title: "Using R to Compare the Exponential Distribution with the Central Limit Theorem"
 author: "Alexander Pyle, <apyle@github.com>"
 date: "December 27, 2015"
-output: 
+output:
   html_document:
-    keep_md: true
+    keep_md: yes
+  pdf_document: default
 ---
 
  A sample set of headings that could be used to guide the creation of your report might be:
@@ -18,6 +19,14 @@ output:
     
 ## Overview
 
+```{r, echo=FALSE}
+
+# load required libraries
+library(data.table)
+library(ggplot2)
+
+```
+
 The Central Limit Theorem (CLT) posits that the distribution of averages of 
 independent and identically distributed (iid) variables randomly drawn from a 
 population becomes that of a standard normal as the sample size increases. This 
@@ -26,22 +35,22 @@ variance. That is to say, the sample mean will converge to the population mean
 as the number of iid varables averaged together increases, and that the variance 
 of these averages will converge to the population variance.
 
-```{r, fig.height = 6, fig.width = 8, fig.align='center'}
+## Simulations
 
-# load required libraries
-library(data.table)
-library(ggplot2)
+The theoretical mean for the exponential distribution is $\frac{1}{\lambda}$ while the standard deviation is also $\frac{1}{\lambda}$. Since $\lambda$ is $0.2$, the mean for our population would be $\frac{1}{0.2}$ or $5.0$. The variance works out to be $\frac{\sigma^2}{n}$ where $n$ is given as $40$. The variance is then $\frac{(\frac{1}{\lambda})^2}{n} = \frac{(\frac{1}{0.2})^2}{40} = \frac{5^2}{40} = \frac{25}{40} = 0.625$.
+
+```{r, fig.height=6, fig.width=8, fig.align='center'}
 
 set.seed(90125) # seed the random number generator for reproducible results
 
-lambda = 0.2    # given by assignment
-samples = 40    # number of samples to use for the mean
-simulations = 1000      # number of simulations to run
+lambda <- 0.2   # given by assignment
+samples <- 40   # number of samples to use for the mean
+simulations <- 1000     # number of simulations to run
 
-meanexp = NULL
+meanexp <- NULL
 for (i in 1 : simulations) 
         meanexp = c(meanexp, mean(rexp(samples, lambda)))
-hist (meanexp)
+hist (meanexp, 25)
 
 meanDF <- as.data.frame(meanexp)
 
@@ -66,6 +75,15 @@ g
 
 ```
 
+```{r}
+
+#The theoretical mean of exponential distribution is 1/λ and the standard deviation is also 1/λ.
+#Given the Central Limit Theorem, your expected mean is
+#1/lambda=1/0.2=5
+#and your expected variance is
+#sigma2n=(1/lambda)2n=(1/0.2)240=0.625
+
+```
 ## Appendix
 
 ```{r}

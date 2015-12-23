@@ -1,4 +1,4 @@
-# Comparing the exponential distribution in R with the Central Limit Theorem
+# Using R to Compare the Exponential Distribution with the Central Limit Theorem
 Alexander Pyle, <apyle@github.com>  
 December 27, 2015  
 
@@ -13,6 +13,8 @@ December 27, 2015
     
 ## Overview
 
+
+
 The Central Limit Theorem (CLT) posits that the distribution of averages of 
 independent and identically distributed (iid) variables randomly drawn from a 
 population becomes that of a standard normal as the sample size increases. This 
@@ -21,25 +23,25 @@ variance. That is to say, the sample mean will converge to the population mean
 as the number of iid varables averaged together increases, and that the variance 
 of these averages will converge to the population variance.
 
+## Simulations
+
+The theoretical mean for the exponential distribution is $\frac{1}{\lambda}$ while the standard deviation is also $\frac{1}{\lambda}$. Since $\lambda$ is $0.2$, the mean for our population would be $\frac{1}{0.2}$ or $5.0$. The variance works out to be $\frac{\sigma^2}{n}$ where $n$ is given as $40$. The variance is then $\frac{(\frac{1}{\lambda})^2}{n} = \frac{(\frac{1}{0.2})^2}{40} = \frac{5^2}{40} = \frac{25}{40} = 0.625$.
+
 
 ```r
-# load required libraries
-library(data.table)
-library(ggplot2)
-
 set.seed(90125) # seed the random number generator for reproducible results
 
-lambda = 0.2    # given by assignment
-samples = 40    # number of samples to use for the mean
-simulations = 1000      # number of simulations to run
+lambda <- 0.2   # given by assignment
+samples <- 40   # number of samples to use for the mean
+simulations <- 1000     # number of simulations to run
 
-meanexp = NULL
+meanexp <- NULL
 for (i in 1 : simulations) 
         meanexp = c(meanexp, mean(rexp(samples, lambda)))
-hist (meanexp)
+hist (meanexp, 25)
 ```
 
-<img src="PA1_files/figure-html/unnamed-chunk-1-1.png" title="" alt="" style="display: block; margin: auto;" />
+<img src="PA1_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" style="display: block; margin: auto;" />
 
 ```r
 meanDF <- as.data.frame(meanexp)
@@ -50,7 +52,7 @@ g <- g + geom_density(size = 2, colour = "black")
 g
 ```
 
-<img src="PA1_files/figure-html/unnamed-chunk-1-2.png" title="" alt="" style="display: block; margin: auto;" />
+<img src="PA1_files/figure-html/unnamed-chunk-2-2.png" title="" alt="" style="display: block; margin: auto;" />
 
 ```r
 # nosim <- 1000
@@ -69,6 +71,14 @@ g
 # g + facet_grid(. ~ size)
 ```
 
+
+```r
+#The theoretical mean of exponential distribution is 1/λ and the standard deviation is also 1/λ.
+#Given the Central Limit Theorem, your expected mean is
+#1/lambda=1/0.2=5
+#and your expected variance is
+#sigma2n=(1/lambda)2n=(1/0.2)240=0.625
+```
 ## Appendix
 
 

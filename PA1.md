@@ -17,15 +17,27 @@ December 27, 2015
 
 The Central Limit Theorem (CLT) posits that the distribution of averages of 
 independent and identically distributed (iid) variables randomly drawn from a 
-population becomes that of a standard normal as the sample size increases. This 
+population becomes that of a population normal as the sample size increases. This 
 analysis tests this theorem and determines that it holds true for mean and the 
 variance. That is to say, the sample mean will converge to the population mean 
-as the number of iid varables averaged together increases, and that the variance 
-of these averages will converge to the population variance.
+as the number of simulations of iid varables averaged together increases, and 
+that the variance of these averages will converge to the population variance.
 
 ## Simulations
 
-The theoretical mean for the exponential distribution is $\frac{1}{\lambda}$ while the standard deviation is also $\frac{1}{\lambda}$. Since $\lambda$ is $0.2$, the mean for our population would be $\frac{1}{0.2}$ or $5.0$. The variance works out to be $\frac{\sigma^2}{n}$ where $n$ is given as $40$. The variance is then $\frac{(\frac{1}{\lambda})^2}{n} = \frac{(\frac{1}{0.2})^2}{40} = \frac{5^2}{40} = \frac{25}{40} = 0.625$.
+To demonstrate the Central Limit Theorem (CLT) this analysis will draw 40 
+independent and identically distributed (iid) sample values from the exponential 
+distribution. These values will be averaged together. By collecting a large 
+number of these averages we can observe the mean of the averages is close to the
+theoretical mean of an exponential distribution population.
+
+The theoretical mean for the exponential distribution is $\frac{1}{\lambda}$ 
+while the standard deviation is also $\frac{1}{\lambda}$. Since $\lambda$ is 
+0.2, the mean for our population would be $\frac{1}{0.2}$ or 5.0. 
+
+The variance for the exponential distribution is $\frac{\sigma^2}{n}$ where $n$ 
+is given as 40. The variance then works out to be 
+$\frac{(\frac{1}{\lambda})^2}{n} = \frac{(\frac{1}{0.2})^2}{40} = \frac{5^2}{40} = \frac{25}{40} = 0.625$.
 
 
 ```r
@@ -38,12 +50,8 @@ simulations <- 1000     # number of simulations to run
 meanexp <- NULL
 for (i in 1 : simulations) 
         meanexp = c(meanexp, mean(rexp(samples, lambda)))
-hist (meanexp, 25)
-```
+#hist (meanexp, 25)
 
-<img src="PA1_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" style="display: block; margin: auto;" />
-
-```r
 meanDF <- as.data.frame(meanexp)
 
 g <- ggplot(data = meanDF, aes(x = meanexp)) 
@@ -52,7 +60,7 @@ g <- g + geom_density(size = 2, colour = "black")
 g
 ```
 
-<img src="PA1_files/figure-html/unnamed-chunk-2-2.png" title="" alt="" style="display: block; margin: auto;" />
+<img src="PA1_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" style="display: block; margin: auto;" />
 
 ```r
 # nosim <- 1000
@@ -83,14 +91,8 @@ g
 
 
 ```r
-library(devtools)
-```
+suppressMessages(library(devtools))
 
-```
-## Warning: package 'devtools' was built under R version 3.1.3
-```
-
-```r
 session_info() # display environment the script was create and run in.
 ```
 

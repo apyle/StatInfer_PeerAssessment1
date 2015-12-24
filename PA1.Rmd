@@ -25,19 +25,36 @@ output:
 library(data.table)
 library(ggplot2)
 
+# variables used in the text and code, reinitiallized in the next chunk. Set here for use in text
+lambda <- 0.2   # given by assignment
+samples <- 40   # number of samples to use for the mean
+simulations <- 1000     # number of simulations to run
+
 ```
 
 The Central Limit Theorem (CLT) posits that the distribution of averages of 
 independent and identically distributed (iid) variables randomly drawn from a 
-population becomes that of a standard normal as the sample size increases. This 
+population becomes that of a population normal as the sample size increases. This 
 analysis tests this theorem and determines that it holds true for mean and the 
 variance. That is to say, the sample mean will converge to the population mean 
-as the number of iid varables averaged together increases, and that the variance 
-of these averages will converge to the population variance.
+as the number of simulations of iid varables averaged together increases, and 
+that the variance of these averages will converge to the population variance.
 
 ## Simulations
 
-The theoretical mean for the exponential distribution is $\frac{1}{\lambda}$ while the standard deviation is also $\frac{1}{\lambda}$. Since $\lambda$ is $0.2$, the mean for our population would be $\frac{1}{0.2}$ or $5.0$. The variance works out to be $\frac{\sigma^2}{n}$ where $n$ is given as $40$. The variance is then $\frac{(\frac{1}{\lambda})^2}{n} = \frac{(\frac{1}{0.2})^2}{40} = \frac{5^2}{40} = \frac{25}{40} = 0.625$.
+To demonstrate the Central Limit Theorem (CLT) this analysis will draw `r samples` 
+independent and identically distributed (iid) sample values from the exponential 
+distribution. These values will be averaged together. By collecting a large 
+number of these averages we can observe the mean of the averages is close to the
+theoretical mean of an exponential distribution population.
+
+The theoretical mean for the exponential distribution is $\frac{1}{\lambda}$ 
+while the standard deviation is also $\frac{1}{\lambda}$. Since $\lambda$ is 
+0.2, the mean for our population would be $\frac{1}{0.2}$ or 5.0. 
+
+The variance for the exponential distribution is $\frac{\sigma^2}{n}$ where $n$ 
+is given as `r samples`. The variance then works out to be 
+$\frac{(\frac{1}{\lambda})^2}{n} = \frac{(\frac{1}{0.2})^2}{40} = \frac{5^2}{40} = \frac{25}{40} = 0.625$.
 
 ```{r, fig.height=6, fig.width=8, fig.align='center'}
 
@@ -50,7 +67,7 @@ simulations <- 1000     # number of simulations to run
 meanexp <- NULL
 for (i in 1 : simulations) 
         meanexp = c(meanexp, mean(rexp(samples, lambda)))
-hist (meanexp, 25)
+#hist (meanexp, 25)
 
 meanDF <- as.data.frame(meanexp)
 
@@ -86,8 +103,8 @@ g
 ```
 ## Appendix
 
-```{r}
-library(devtools)
+```{r, warning=FALSE}
+suppressMessages(library(devtools))
 
 session_info() # display environment the script was create and run in.
 ```

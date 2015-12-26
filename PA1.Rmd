@@ -24,11 +24,14 @@ output:
 # load required libraries
 library(data.table)
 library(ggplot2)
+library(xtable)
 
 # variables used in the text and code, reinitiallized in the next chunk. Set here for use in text
 lambda <- 0.2   # given by assignment
 samples <- 40   # number of samples to use for the mean
 simulations <- 1000     # number of simulations to run
+popmean <- 1/lambda     # theoretical mean of the population
+popvariance <- (1/lambda)^2 / samples # theoretical variance of the population
 
 ```
 
@@ -50,7 +53,7 @@ theoretical mean of an exponential distribution population.
 
 The theoretical mean for the exponential distribution is $\frac{1}{\lambda}$ 
 while the standard deviation is also $\frac{1}{\lambda}$. Since $\lambda$ is 
-0.2, the mean for our population would be $\frac{1}{0.2}$ or 5.0. 
+`r lambda`, the mean for our population would be $\frac{1}{0.2}$ or `r popmean`. 
 
 The following code generates `r simulations` simulations of `r samples` variables 
 and stores the means of each simulation in `meanexp`. This set of simulations are 
@@ -110,6 +113,39 @@ $\frac{(\frac{1}{\lambda})^2}{n} = \frac{(\frac{1}{0.2})^2}{40} = \frac{5^2}{40}
 
 
 ```{r}
+
+mean100 <- NULL
+for (i in 1: 100)
+        mean100 <- c(mean100, mean(rexp(samples, lambda)))
+mean10K <- NULL
+for (i in 1:10000)
+        mean10K <- c(mean10K, mean(rexp(samples, lambda)))
+mean100K <- NULL
+for (i in 1:100000)
+        mean100K <- c(mean100K, mean(rexp(samples, lambda)))
+
+df <- data.frame(Samples = c("100", "1,000", "10,000", "100,000"),
+                 Variance = c(round(c(var(mean100), var(meanexp), var(mean10K), var(mean100K)), 4)), 
+                 PopVariance = popvariance,
+                 Difference = round(c(var(mean100) - popvariance, var(meanexp) - popvariance, 
+                                      var(mean10K) - popvariance, var(mean100K) - popvariance), 3)
+                 )
+
+tab <- xtable(df, "html", digits = 3)
+print.xtable(tab, "html", include.rownames = FALSE)
+
+
+# library(ggplot2)
+# nosim <- 10000;
+# dat <- data.frame(
+#     x = c(apply(matrix(rnorm(nosim * 40), nosim), 1, var),
+#           apply(matrix(rnorm(nosim * 40), nosim * 10), 1, var),
+#           apply(matrix(rnorm(nosim * 40), nosim * 100), 1, var)),
+#     n = factor(rep(c("1000", "10000", "100000"), c(nosim, nosim * 10, nosim * 100)))
+# )
+# ggplot(dat, aes(x = x, fill = n)) + 
+#         geom_density(size = 2, alpha = .2) + 
+#         geom_vline(xintercept = 1, size = 2)
 
 #The theoretical mean of exponential distribution is 1/λ and the standard deviation is also 1/λ.
 #Given the Central Limit Theorem, your expected mean is

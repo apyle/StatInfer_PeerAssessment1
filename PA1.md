@@ -35,9 +35,7 @@ The theoretical mean for the exponential distribution is $\frac{1}{\lambda}$
 while the standard deviation is also $\frac{1}{\lambda}$. Since $\lambda$ is 
 0.2, the mean for our population would be $\frac{1}{0.2}$ or 5.0. 
 
-The variance for the exponential distribution is $\frac{\sigma^2}{n}$ where $n$ 
-is given as 40. The variance then works out to be 
-$\frac{(\frac{1}{\lambda})^2}{n} = \frac{(\frac{1}{0.2})^2}{40} = \frac{5^2}{40} = \frac{25}{40} = 0.625$.
+The following code generates 1000 simulations of 40 variables and stores the means of each simulation in `meanexp`. This set of simulations are then plotted with the `data.frame meanDF` variable.
 
 
 ```r
@@ -46,38 +44,50 @@ set.seed(90125) # seed the random number generator for reproducible results
 lambda <- 0.2   # given by assignment
 samples <- 40   # number of samples to use for the mean
 simulations <- 1000     # number of simulations to run
+popmean <- 1/lambda     # theoretical mean of the population
+popvariance <- (1/lambda)^2 / samples # theoretical variance of the population
 
 meanexp <- NULL
 for (i in 1 : simulations) 
-        meanexp = c(meanexp, mean(rexp(samples, lambda)))
-#hist (meanexp, 25)
+        meanexp <- c(meanexp, mean(rexp(samples, lambda)))
 
+samplemean <- mean(meanexp)
 meanDF <- as.data.frame(meanexp)
 
 g <- ggplot(data = meanDF, aes(x = meanexp)) 
-g <- g + geom_histogram(aes(y = ..density..), fill = "lightblue", binwidth=0.2, colour = "black")
-g <- g + geom_density(size = 2, colour = "black")
+g <- g + geom_histogram(aes(y = ..density..), fill = "lightblue", 
+                        binwidth = 0.2, colour = "black")
+g <- g + geom_density(size = 2, colour = "red")
+g <- g + labs(title = paste("Distribution of Averages of", samples, "Samples"), 
+              x = paste("Mean of", samples, "Samples"),
+              y = "Density")
+g <- g + geom_vline(x = samplemean, size = 1, colour = "black")
+g <- g + annotate("text", x = samplemean - 1, y = 0.55, 
+                  label = paste("Sample Mean (", round(samplemean, 3), ") -->", sep = ""))
+g <- g + geom_vline(x = popmean, size = 1, colour = "black")
+g <- g + annotate("text", x = popmean + 1, y = 0.55, 
+                  label = paste("<-- Theoretical Mean (", round(popmean, 3), ")", sep = ""))
 g
 ```
 
 <img src="PA1_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" style="display: block; margin: auto;" />
 
-```r
-# nosim <- 1000
-# cfunc <- function(x, n) sqrt(n) * (mean(x) - 0.9) / sqrt(.1 * .9)
-# dat <- data.frame(
-#         x = c(apply(matrix(sample(0:1, prob = c(.1,.9), nosim * 10, replace = TRUE), 
-#                            nosim), 1, cfunc, 10),
-#               apply(matrix(sample(0:1, prob = c(.1,.9), nosim * 30, replace = TRUE), 
-#                            nosim), 1, cfunc, 30),
-#               apply(matrix(sample(0:1, prob = c(.1,.9), nosim * 50, replace = TRUE), 
-#                            nosim), 1, cfunc, 50)
-#         ),
-#         size = factor(rep(c(10, 30, 50), rep(nosim, 3))))
-# g <- ggplot(dat, aes(x = x, fill = size)) + geom_histogram(binwidth=.3, colour = "black", aes(y = ..density..)) 
-# g <- g + stat_function(fun = dnorm, size = 2)
-# g + facet_grid(. ~ size)
-```
+As we can observe from the plot above, the theoretical mean of 5 is 
+closely simulated with the sample mean of 5.008. The density function, 
+drawn in red on the plot, closely resembles a normal distribution which we would 
+expect from taking the average of a draw of iid values. It does not completely 
+match the normal Gaussian distribution because we did not draw an infinite number 
+of values, but it already come very close simply with 1000 simulations. 
+By simply using 1000 simulations of 40 we have quickly 
+demonstrated the value of using the sample mean as a good approximation of the 
+population mean the iid values have been drawn from.
+
+## Variance
+
+The variance for the exponential distribution is $\frac{\sigma^2}{n}$ where $n$ 
+is given as 40. The variance then works out to be 
+$\frac{(\frac{1}{\lambda})^2}{n} = \frac{(\frac{1}{0.2})^2}{40} = \frac{5^2}{40} = \frac{25}{40} = 0.625$.
+
 
 
 ```r
@@ -91,7 +101,9 @@ g
 
 
 ```r
-suppressMessages(library(devtools))
+library(devtools)
+
+#hist (meanexp, 25)
 
 session_info() # display environment the script was create and run in.
 ```

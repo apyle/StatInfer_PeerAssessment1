@@ -2,15 +2,6 @@
 Alexander Pyle, <apyle@github.com>  
 December 27, 2015  
 
- A sample set of headings that could be used to guide the creation of your report might be:
-
-    (DONE) Title (give an appropriate title) and Author Name
-    (DONE) Overview: In a few (2-3) sentences explain what is going to be reported on.
-    (DONE) Simulations: Include English explanations of the simulations you ran, with the accompanying R code. Your explanations should make clear what the R code accomplishes.
-    (DONE) Sample Mean versus Theoretical Mean: Include figures with titles. In the figures, highlight the means you are comparing. Include text that explains the figures and what is shown on them, and provides appropriate numbers.
-    Sample Variance versus Theoretical Variance: Include figures (output from R) with titles. Highlight the variances you are comparing. Include text that explains your understanding of the differences of the variances.
-    Distribution: Via figures and text, explain how one can tell the distribution is approximately normal. 
-    
 ## Overview
 
 
@@ -33,7 +24,7 @@ theoretical mean of an exponential distribution population.
 
 The theoretical mean for the exponential distribution is $\frac{1}{\lambda}$ 
 while the standard deviation is also $\frac{1}{\lambda}$. Since $\lambda$ is 
-0.2, the mean for our population would be $\frac{1}{0.2}$ or 5.0. 
+0.2, the mean for our population would be $\frac{1}{0.2}$ or 5. 
 
 The following code generates 1000 simulations of 40 variables 
 and stores the means of each simulation in `meanexp`. This set of simulations are 
@@ -42,7 +33,6 @@ then plotted with the `data.frame meanDF` variable.
 
 ```r
 set.seed(90125) # seed the random number generator for reproducible results
-
 lambda <- 0.2   # given by assignment
 samples <- 40   # number of samples to use for the mean
 simulations <- 1000     # number of simulations to run
@@ -55,16 +45,16 @@ for (i in 1 : simulations)
 
 samplemean <- mean(meanexp)
 meanDF <- as.data.frame(meanexp)
+```
 
+
+```r
 labYPos = 0.55  # standardize location for labels
-
 g <- ggplot(data = meanDF, aes(x = meanexp)) 
-g <- g + geom_histogram(aes(y = ..density..), fill = "lightblue", 
-                        binwidth = 0.2, colour = "black")
+g <- g + geom_histogram(aes(y = ..density..), fill = "lightblue", binwidth = 0.2, colour = "black")
 g <- g + geom_density(size = 2, colour = "red")
 g <- g + labs(title = paste("Figure 1: Distribution of Averages of", samples, "Samples"), 
-              x = paste("Mean of", samples, "Samples"),
-              y = "Density")
+              x = paste("Mean of", samples, "Samples"), y = "Density")
 g <- g + geom_vline(x = samplemean, size = 1, colour = "black")
 g <- g + annotate("text", x = samplemean - 1, y = labYPos, 
                   label = paste("Sample Mean (", round(samplemean, 3), ") -->", sep = ""))
@@ -74,17 +64,13 @@ g <- g + annotate("text", x = popmean + 1, y = labYPos,
 g
 ```
 
-<img src="PA1_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" style="display: block; margin: auto;" />
+<img src="PA1_files/figure-html/unnamed-chunk-1-1.png" title="" alt="" style="display: block; margin: auto;" />
 
-As we can observe from the plot above, the theoretical mean of 5 is 
-closely simulated with the sample mean of 5.008. The density function, 
-drawn in red on the plot, closely resembles a normal distribution which we would 
-expect from taking the average of a draw of iid values. It does not completely 
-match the normal Gaussian distribution because we did not draw an infinite number 
-of values, but it already come very close simply with 1000 simulations. 
-By simply using 1000 simulations of 40 we have quickly 
-demonstrated the value of using the sample mean as a good approximation of the 
-population mean the iid values have been drawn from.
+As we can observe from the plot above, the theoretical mean of 5 
+is closely simulated with the sample mean of 5.008. By simply 
+using 1000 simulations of 40 we have quickly demonstrated the 
+value of using the sample mean as a good approximation of the population mean the 
+iid values have been drawn from.
 
 ## Variance
 
@@ -92,21 +78,71 @@ The variance for the exponential distribution is $\frac{\sigma^2}{n}$ where $n$
 is given as 40. The variance then works out to be 
 $\frac{(\frac{1}{\lambda})^2}{n} = \frac{(\frac{1}{0.2})^2}{40} = \frac{5^2}{40} = \frac{25}{40} = 0.625$.
 
+To demonstrate the CLT in action we'll generate 100, 1,000, 10,000, and 100,000 
+simulations and compare the theoreticl population variance of each of these. 
+Since `meanexp` already has 1,000 simulations we will reuse it for the variance.
 
 
 ```r
-#The theoretical mean of exponential distribution is 1/λ and the standard deviation is also 1/λ.
-#Given the Central Limit Theorem, your expected mean is
-#1/lambda=1/0.2=5
-#and your expected variance is
-#sigma2n=(1/lambda)2n=(1/0.2)240=0.625
+mean100 <- NULL
+for (i in 1: 100) 
+        mean100 <- c(mean100, mean(rexp(samples, lambda)))
+mean10K <- NULL
+for (i in 1:10000) 
+        mean10K <- c(mean10K, mean(rexp(samples, lambda)))
+mean100K <- NULL
+for (i in 1:100000) 
+        mean100K <- c(mean100K, mean(rexp(samples, lambda)))
+
+df <- data.frame(Samples = c("100", "1,000", "10,000", "100,000"),
+                Variance = c(round(c(var(mean100), var(meanexp), var(mean10K), var(mean100K)),4)), 
+                PopVariance = popvariance,
+                Difference = round(c(var(mean100) - popvariance, var(meanexp) - popvariance, 
+                                     var(mean10K) - popvariance, var(mean100K) - popvariance),3))
+
+vartable <- xtable(df, "Table 1: Variance for Samples of 40 Draws", digits = 3)
+vartable <- print.xtable(vartable, type = "html", include.rownames = FALSE, print.results = FALSE)
 ```
+
+The results are are tabulated below. As we can see, as the number of simulations 
+increases, the sample variance gets closer to the population variance. This is 
+predicted by the CLT since as we increase the number of samples the sample variance 
+will converge to the population variance.
+
+<!-- html table generated in R 3.1.2 by xtable 1.7-4 package -->
+<!-- Sat Dec 26 21:49:25 2015 -->
+<table border=1>
+<caption align="bottom"> Table 1: Variance for Samples of 40 Draws </caption>
+<tr> <th> Samples </th> <th> Variance </th> <th> PopVariance </th> <th> Difference </th>  </tr>
+  <tr> <td> 100 </td> <td align="right"> 0.710 </td> <td align="right"> 0.625 </td> <td align="right"> 0.085 </td> </tr>
+  <tr> <td> 1,000 </td> <td align="right"> 0.598 </td> <td align="right"> 0.625 </td> <td align="right"> -0.027 </td> </tr>
+  <tr> <td> 10,000 </td> <td align="right"> 0.634 </td> <td align="right"> 0.625 </td> <td align="right"> 0.009 </td> </tr>
+  <tr> <td> 100,000 </td> <td align="right"> 0.629 </td> <td align="right"> 0.625 </td> <td align="right"> 0.004 </td> </tr>
+   </table>
+
 
 ## Distribution
 
-Refering back to Figure 1 above, we can observe the distribution density in the red line which smooths out the distribution given by the boxes in the plot. 
+Refering back to Figure 1 above, we can observe the distribution density in the 
+red line which smooths out the distribution given by the boxes in the plot. The 
+density function closely resembles a normal distribution which we would expect 
+from taking the average of a draw of iid values. It does not completely match the 
+normal Gaussian distribution because we did not draw an infinite number of values, 
+but it already come very close simply with 1000 simulations. 
+
+## Conclusion
+
+By running simulations of averages of iid variables, we can show show that the 
+Central Limit Theorem holds for the sample mean closely simulating the population 
+mean, the sample variance simulating the population variance, and the distribution 
+of averages closely resembles a normal distribuion with only 1000 
+simulations.
 
 ## Appendix
+
+This analysis was run with the following configuration. Running 100,000 simulations 
+took a long time and is not recommended for normal processing without a compelling 
+reason.
 
 
 ```r
@@ -159,43 +195,7 @@ devtools::session_info() # display environment the script was create and run in.
 ##  scales       0.2.4    2014-04-22 CRAN (R 3.1.0)                    
 ##  stringr      0.6.2    2012-12-06 CRAN (R 3.1.0)                    
 ##  XML          3.98-1.1 2013-06-20 CRAN (R 3.1.0)                    
+##  xtable     * 1.7-4    2014-09-12 CRAN (R 3.1.1)                    
 ##  yaml         2.1.13   2014-06-12 CRAN (R 3.1.0)
-```
-
-
-```r
-#More potentially useful code:
-#
-#---
-#title: "Testing chunk reuse"
-#author: "Neil Saunders"
-#date: "24/02/2015"
-#output: html_document
-#---
-# 
-### Introduction
-#Here is my very interesting document.
-# 
-#Chunk 1 is calling chunk 2 here, but you can't see it.
-#```{r chunk1, ref.label="chunk2", echo=FALSE}
-#```
-# 
-### This chunk is unnamed but can now use code from chunk 2
-#```{r}
-#myFunction(7)
-#```
-# 
-### This is chunk 2
-#My long and ugly R function is now down here.
-# 
-#```{r chunk2}
-## it's not really long and ugly
-## it just squares the input
-## but imagine that it is long and ugly
-# 
-#myFunction <- function(x) {
-#  print(x ^ 2)
-#}
-#```
 ```
 

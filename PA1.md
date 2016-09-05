@@ -79,7 +79,7 @@ is given as 40. The variance then works out to be
 $\frac{(\frac{1}{\lambda})^2}{n} = \frac{(\frac{1}{0.2})^2}{40} = \frac{5^2}{40} = \frac{25}{40} = 0.625$.
 
 To demonstrate the CLT in action we'll generate 100, 1,000, 10,000, and 100,000 
-simulations and compare the theoreticl population variance of each of these. 
+simulations and compare the theoretical population variance of each of these. 
 Since `meanexp` already has 1,000 simulations we will reuse it for the variance.
 
 
@@ -110,7 +110,7 @@ predicted by the CLT since as we increase the number of samples the sample varia
 will converge to the population variance.
 
 <!-- html table generated in R 3.1.2 by xtable 1.7-4 package -->
-<!-- Sat Dec 26 21:49:25 2015 -->
+<!-- Sun Sep  4 19:46:09 2016 -->
 <table border=1>
 <caption align="bottom"> Table 1: Variance for Samples of 40 Draws </caption>
 <tr> <th> Samples </th> <th> Variance </th> <th> PopVariance </th> <th> Difference </th>  </tr>

@@ -100,7 +100,7 @@ g</code></pre>
 <div id="variance" class="section level2">
 <h2>Variance</h2>
 <p>The variance for the exponential distribution is <span class="math">\(\frac{\sigma^2}{n}\)</span> where <span class="math">\(n\)</span> is given as 40. The variance then works out to be <span class="math">\(\frac{(\frac{1}{\lambda})^2}{n} = \frac{(\frac{1}{0.2})^2}{40} = \frac{5^2}{40} = \frac{25}{40} = 0.625\)</span>.</p>
-<p>To demonstrate the CLT in action we’ll generate 100, 1,000, 10,000, and 100,000 simulations and compare the theoreticl population variance of each of these. Since <code>meanexp</code> already has 1,000 simulations we will reuse it for the variance.</p>
+<p>To demonstrate the CLT in action we’ll generate 100, 1,000, 10,000, and 100,000 simulations and compare the theoretical population variance of each of these. Since <code>meanexp</code> already has 1,000 simulations we will reuse it for the variance.</p>
 <pre class="r"><code>mean100 &lt;- NULL
 for (i in 1: 100) 
         mean100 &lt;- c(mean100, mean(rexp(samples, lambda)))
@@ -121,7 +121,7 @@ vartable &lt;- xtable(df, &quot;Table 1: Variance for Samples of 40 Draws&quot;,
 vartable &lt;- print.xtable(vartable, type = &quot;html&quot;, include.rownames = FALSE, print.results = FALSE)</code></pre>
 <p>The results are are tabulated below. As we can see, as the number of simulations increases, the sample variance gets closer to the population variance. This is predicted by the CLT since as we increase the number of samples the sample variance will converge to the population variance.</p>
 <!-- html table generated in R 3.1.2 by xtable 1.7-4 package -->
-<!-- Sat Dec 26 21:49:25 2015 -->
+<!-- Sun Sep  4 19:46:09 2016 -->
 <table border="1">
 <caption align="bottom"> 
 Table 1: Variance for Samples of 40 Draws
